@@ -179,12 +179,22 @@ const Midle = () => {
   };
 
   const series = chartData.map((data) => data.data);
+  const now = new Date();
+  const formattedDate = now.toLocaleString("en-US", {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
 
   return (
     <div css={containerStyle}>
       <div css={topMidleStyle}>
         <span css={montheStyle}>This Month Statistics</span>
-        <span css={dateStyle}>Tue, 14 ,Nov , 2024 , 11:30Am</span>
+        <span css={dateStyle}>{formattedDate}</span>
       </div>
       <div css={midleMidleStyle}>
         <div css={midleCompantStyle}>
@@ -194,13 +204,13 @@ const Midle = () => {
           </div>
         </div>
         <div css={midleComponentStyle}>
-          <h1 css={midleComponentH1Style}>ETB9460.0</h1>
+          <h1 css={midleComponentH1Style}>ETB{total}</h1>
           <span css={midleComponentSpanStyle}>
             compared to ETB{total} last month
           </span>
           <div css={midleComStyle}>
             <span>Last Month Income</span>
-            <span>ETB 25658.00</span>
+            <span>ETB {total}</span>
           </div>
         </div>
       </div>
