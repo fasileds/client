@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import DehazeIcon from "@mui/icons-material/Dehaze";
 import ComputerIcon from "@mui/icons-material/Computer";
 import LoginIcon from "@mui/icons-material/Login";
@@ -10,9 +10,8 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
 import { Link, Navigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { logOut } from "../../redux/user";
-import axios from "axios";
 
 export default function SideBar({ type }) {
   const dispatch = useDispatch();
@@ -36,7 +35,7 @@ export default function SideBar({ type }) {
           <DehazeIcon />
         </span>
         <img src="/logo.png" css={imageStyle} alt="the image is not here" />
-        <span>Book Rent</span>
+        <span css={{ color: "#00ABFF" }}>Book Rent</span>
       </div>
 
       <div css={lineStyle}></div>
@@ -45,14 +44,18 @@ export default function SideBar({ type }) {
         {type === "owner" ? (
           <Link to="/owner">
             <div css={sliderButtonStyle}>
-              <SpaceDashboardIcon />
+              <span css={{ marginRight: 15 }}>
+                <SpaceDashboardIcon />
+              </span>
               <span>Dashboard</span>
             </div>
           </Link>
         ) : (
           <Link to="/admin">
             <div css={sliderButtonStyle}>
-              <SpaceDashboardIcon />
+              <span css={{ marginRight: 15 }}>
+                <SpaceDashboardIcon />
+              </span>
               <span>Dashboard</span>
             </div>
           </Link>
@@ -62,7 +65,7 @@ export default function SideBar({ type }) {
             {type === "owner" ? (
               <div>
                 <Link to="/owner/upload">
-                  <li css={middleListStyle}>
+                  <li css={middleListStyle} style={{ marginBottom: 10 }}>
                     <ComputerIcon />
                     <span>Book Uploaded</span>
                   </li>
@@ -75,7 +78,7 @@ export default function SideBar({ type }) {
             ) : (
               <div>
                 <Link to="/admin/books">
-                  <li css={middleListStyle}>
+                  <li css={middleListStyle} style={{ marginBottom: 10 }}>
                     <ComputerIcon />
                     <span>Books</span>
                   </li>
@@ -112,7 +115,9 @@ export default function SideBar({ type }) {
             <li css={middleListStyle}>
               {type === "owner" ? (
                 <Link to="/admin/login">
-                  <AccountCircleOutlinedIcon />
+                  <span css={{ marginRight: 15 }}>
+                    <AccountCircleOutlinedIcon />
+                  </span>
                   <span>LogIn as admin</span>
                 </Link>
               ) : (
@@ -134,9 +139,10 @@ export default function SideBar({ type }) {
 
 // Emotion CSS styles
 const sideBarStyle = css`
+  margin: 10px 10px 20px 10px;
   display: flex;
   height: 100vh;
-  background-color: #1e2a38;
+  background-color: #1b213b;
   width: 300px;
 
   flex-direction: column;
@@ -150,9 +156,8 @@ const sideBarStyle = css`
 const sideBarTopStyle = css`
   display: flex;
   align-items: center;
-  justify-content: space-between;
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 `;
 
 const topIconStyle = css`
@@ -160,14 +165,16 @@ const topIconStyle = css`
 `;
 
 const imageStyle = css`
+  margin-left: 20px;
+  margin-right: 10px;
   width: 40px;
   height: auto;
 `;
 
 const lineStyle = css`
   width: 100%;
-  height: 1px;
-  background-color: #ffffff;
+  height: 0.2px;
+  background-color: silver;
   margin: 20px 0;
 `;
 
@@ -206,26 +213,29 @@ const middleListStyle = css`
   align-items: center;
   gap: 15px;
   cursor: pointer;
-  color: #ffffff;
+  color: silver;
   text-decoration: none;
   transition: background-color 0.3s ease;
+  padding: 10px 20px;
 
   &:hover {
-    background-color: #2c3e50;
+    background-color: #0099cc;
     border-radius: 5px;
-    padding: 5px;
+    padding: 10px;
+    color: #ffffff;
   }
 `;
 
 const logOutButtonStyle = css`
-  display: flex;
+  width: 94%;
   align-items: center;
-  padding: 12px 20px;
-  margin-top: auto;
+  padding: 10px 50px;
+  margin: auto;
   border-radius: 8px;
   background-color: rgba(255, 255, 255, 0.2);
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-bottom: 10px;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.3);

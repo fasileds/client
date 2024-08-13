@@ -27,7 +27,7 @@ export default function Graph({ statuse }) {
     },
     axisY: {
       title: "Income",
-      suffix: " B",
+      suffix: " Birr",
     },
     data: [
       {

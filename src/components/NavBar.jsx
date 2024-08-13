@@ -25,10 +25,10 @@ const Span = styled.span`
   }
 `;
 
-export default function NavBar() {
+export default function NavBar({ type }) {
   return (
     <Container>
-      <Span>span</Span>
+      <Span>{type}</Span>
     </Container>
   );
 }

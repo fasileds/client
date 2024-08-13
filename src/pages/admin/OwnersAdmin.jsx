@@ -15,6 +15,8 @@ import NavBar from "../../components/NavBar";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
+import Switch from "@mui/material/Switch";
+import { CheckIcon } from "@mui/icons-material/Check";
 
 // Styles
 const homeContainerStyles = css`
@@ -123,63 +125,13 @@ const formInputDisabled = css`
   cursor: not-allowed;
 `;
 
-// Switch component
-const Switch = ({ isActive, onToggle }) => (
-  <div
-    css={css`
-      display: flex;
-      align-items: center;
-      width: 120px;
-      height: 30px;
-      background-color: #e0e0e0;
-      border-radius: 30px;
-      cursor: pointer;
-      position: relative;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      transition: background-color 0.3s ease;
-      &.active {
-        background-color: #4caf50;
-      }
-      .react-switch-button {
-        width: 28px;
-        height: 28px;
-        background-color: #fff;
-        border-radius: 50%;
-        position: absolute;
-        top: 1px;
-        left: 1px;
-        transition: transform 0.3s ease;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        &.active {
-          transform: translateX(calc(100% - 30px));
-        }
-      }
-      .react-switch-label {
-        font-family: Arial, sans-serif;
-        font-size: 14px;
-        color: #fff;
-        position: absolute;
-        top: 50%;
-        left: 10px;
-        transform: translateY(-50%);
-      }
-    `}
-    className={isActive ? "active" : ""}
-    onClick={onToggle}
-  >
-    <div className="react-switch-button" />
-    {isActive && <span className="react-switch-label">Active</span>}
-  </div>
-);
-
 // Main Component
 export default function OwnersAdmin() {
   const [isActive, setIsActive] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [owners, setOwners] = useState([]);
-  const [userId, setUserId] = useState("");
+  const [singleOwner, setSingleOwner] = useState([]);
   const token = useSelector((state) => state.user.token);
-  const [status, setStatus] = useState();
 
   useEffect(() => {
     const getOwners = async () => {
@@ -209,33 +161,34 @@ export default function OwnersAdmin() {
       await axios.put(`http://localhost:3001/api/owners/approveUser/${id}`, {
         isAproved: updatedIsApproved,
       });
-
-      // Update the local state to reflect the changes
-      // setBooks((prevBooks) =>
-      //   prevBooks.map((book) =>
-      //     book.id === id
-      //       ? {
-      //           ...book,
-      //           isApproved: updatedIsApproved,
-      //         }
-      //       : book
-      //   )
-      // );
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }
   };
-  const handleToggle = (id) => {
+
+  const handleToggle = () => {
     setIsActive(!isActive);
-    console.log("Toggle switch for owner with ID:", id);
   };
 
-  const toggleForm = () => {
+  const toggleForm = (owner) => {
+    setSingleOwner(owner);
     setShowForm(!showForm);
   };
-
-  const handleDelete = (id) => {
-    // Implement the delete function
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(
+        `http://localhost:3001/api/owners/deleteOwners/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setOwners(owners.filter((owner) => owner.id !== id));
+    } catch (error) {
+      console.log(error);
+    }
     console.log("Delete owner with ID:", id);
   };
 
@@ -243,23 +196,16 @@ export default function OwnersAdmin() {
     <div css={homeContainerStyles}>
       <SideBar />
       <div className="homeComponents">
-        <NavBar />
+        <NavBar type="admin/owners" />
         <div>
-          <TableContainer
-            component={Paper}
-            css={css`
-              width: 100%;
-              max-width: 1200px; // Adjust as needed
-              margin: 0 auto;
-            `}
-          >
-            <Table aria-label="simple table">
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
                   <TableCell>No</TableCell>
-                  <TableCell align="center">Owner</TableCell>
-                  <TableCell align="center">Email</TableCell>
-                  <TableCell align="center">Location</TableCell>
+                  <TableCell align="right">Owner</TableCell>
+                  <TableCell align="right">Email</TableCell>
+                  <TableCell align="right">Location</TableCell>
                   <TableCell align="center">Status</TableCell>
                   <TableCell align="right">Action</TableCell>
                 </TableRow>
@@ -271,7 +217,7 @@ export default function OwnersAdmin() {
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <TableCell component="th" scope="row">
-                      01
+                      {owner.id}
                     </TableCell>
                     <TableCell align="right">
                       <img
@@ -285,13 +231,13 @@ export default function OwnersAdmin() {
                     <TableCell align="right">{owner.addrasse}</TableCell>
                     <TableCell align="center">
                       <Switch
-                        isActive={owner.isChecked}
-                        onToggle={() => handleToggle(owner.id)}
+                        checked={owner.isChecked}
+                        onChange={() => handleToggle(owner.id)}
                       />
                     </TableCell>
                     <TableCell align="right">
                       <RemoveRedEyeIcon
-                        onClick={() => toggleForm()}
+                        onClick={() => toggleForm(owner)}
                         css={css`
                           cursor: pointer;
                         `}
@@ -309,10 +255,9 @@ export default function OwnersAdmin() {
                         <button css={approveButton}>Approved</button>
                       ) : (
                         <button
+                          onClick={handleOnclick}
                           css={approveButtonDisabled}
-                          onClick={() =>
-                            handleOnclick(owner.id, owner.isChecked)
-                          }
+                          disabled
                         >
                           Not Approved
                         </button>
@@ -325,7 +270,7 @@ export default function OwnersAdmin() {
           </TableContainer>
         </div>
       </div>
-      {showForm && (
+      {showForm && singleOwner && (
         <div css={popupForm}>
           <div css={popupContent}>
             <h2 className="popupTitle">Owner Details</h2>
@@ -335,7 +280,7 @@ export default function OwnersAdmin() {
                 id="ownerName"
                 aria-label="Owner Name"
                 css={formInput}
-                value="Owner Name"
+                value={singleOwner.name}
                 disabled
               />
               <input
@@ -343,7 +288,7 @@ export default function OwnersAdmin() {
                 id="ownerEmail"
                 aria-label="Owner Email"
                 css={formInput}
-                value="owner@example.com"
+                value={singleOwner.email}
                 disabled
               />
               <input
@@ -351,7 +296,7 @@ export default function OwnersAdmin() {
                 id="ownerLocation"
                 aria-label="Owner Location"
                 css={formInput}
-                value="Location"
+                value={singleOwner.addrasse}
                 disabled
               />
               <input
@@ -359,7 +304,7 @@ export default function OwnersAdmin() {
                 id="ownerPhone"
                 aria-label="Owner Phone"
                 css={formInput}
-                value="Phone Number"
+                value={singleOwner.phoneNo}
                 disabled
               />
             </form>

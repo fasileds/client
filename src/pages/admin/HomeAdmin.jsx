@@ -81,8 +81,9 @@ export default function HomeAdmin() {
   return (
     <div css={homeContainerStyle}>
       <SideBar type={"admin"} />
+
       <div css={homeComponentsStyle}>
-        <NavBar />
+        <NavBar type="admin" />
         <div css={homeSeconedStyle}>
           <Midle />
           <div css={homeThirdStyle}>

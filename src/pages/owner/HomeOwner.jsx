@@ -43,7 +43,7 @@ export default function HomeOwner() {
     <div css={homeContainerStyle}>
       <SideBar type={"owner"} />
       <div css={homeComponentsStyle}>
-        <NavBar />
+        <NavBar type="owners" />
         <div css={homeSeconedStyle}>
           <Midle />
           <div css={homeThirdStyle}>

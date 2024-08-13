@@ -30,8 +30,8 @@ export default function BasicTable({ item }) {
             <TableCell align="right">Book Name</TableCell>
             <TableCell align="right">Author</TableCell>
             <TableCell align="right">price</TableCell>
-            <TableCell align="right">Amounte</TableCell>
-            <TableCell align="right">Statuse</TableCell>
+            <TableCell align="right">Amount</TableCell>
+            <TableCell align="right">Status</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

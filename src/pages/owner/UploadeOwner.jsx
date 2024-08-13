@@ -48,10 +48,6 @@ const UploadeOwnere = () => {
     }
   };
 
-  if (!token) {
-    return <Navigate to="/" replace />;
-  }
-
   const toggleForm = () => {
     setShowForm(!showForm);
   };
@@ -74,11 +70,14 @@ const UploadeOwnere = () => {
     getCatagorys();
   }, []); // Adding dependency array to avoid infinite loop
 
+  if (!token) {
+    return <Navigate to="/" replace />;
+  }
   return (
     <div css={uploadContainerStyle}>
       <SideBar type={"owner"} />
       <div css={uploadComponentsStyle}>
-        <NavBar />
+        <NavBar type="owners/UplodBooks" />
         <div css={uploadSeconedStyle}>
           <div>
             <h2>Upload New Book</h2>
@@ -186,10 +185,10 @@ const UploadeOwnere = () => {
               <div css={popupContentStyle}>
                 <img src="/imogi.png" alt="Success" />
                 <h2>Congratulations!</h2>
-                <span>
+                <p>
                   You have successfully uploaded the book. Please wait until we
                   approve it.
-                </span>
+                </p>
                 <button css={closeButtonStyle} onClick={toggleSuccess}>
                   Close
                 </button>
@@ -240,7 +239,10 @@ const serchItemsStyle = css`
     border: none;
     height: 30px;
     width: 300px;
-    background-color: rgb(196, 196, 196);
+    background-color: white;
+    border: 1px solid wheat;
+    border-radius: 10px;
+    height: 34px;
   }
 `;
 
@@ -326,7 +328,19 @@ const formInputStyle = css`
   border-radius: 0.375rem;
   outline: none;
   &:focus {
-    border-color: #007bff;
+    border-color: #00abff;
+    outline: none;
+    border: 0.5px solid #00abff;
+  }
+
+  &::placeholder {
+    color: transparent;
+  }
+
+  &:not(:placeholder-shown) + label,
+  &:focus + label {
+    transform: translateY(-0.9rem) scale(0.75);
+    color: #00abff;
   }
 `;
 

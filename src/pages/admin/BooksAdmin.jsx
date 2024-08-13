@@ -13,6 +13,7 @@ import NavBar from "../../components/NavBar";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
+import Switch from "@mui/material/Switch";
 
 // Flex container styles
 const homeContainerStyles = css`
@@ -26,52 +27,51 @@ const homeComponentsStyles = css`
   flex-direction: column;
 `;
 
-const customSwitchStyles = css`
+// Switch component styles
+const switchStyles = css`
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* Align the switch to the right */
-  width: 150px;
-  height: 25px;
-  padding: 10px 14px 9px 15px;
-  background: rgba(0, 128, 0, 0.1);
-  border-radius: 10px;
+  width: 120px;
+  height: 30px;
+  background-color: #e0e0e0;
+  border-radius: 30px;
   cursor: pointer;
   position: relative;
-  gap: 0px;
-  color: black;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s ease;
 
   &.active {
-    background: rgba(0, 128, 0, 0.7); /* Green background when active */
+    background-color: #4caf50;
   }
 `;
 
-const customSwitchButtonStyles = css`
-  width: 30px;
-  height: 35px;
-  background-color: #008000; /* Green color for the button */
+const switchButtonStyles = css`
+  width: 28px;
+  height: 28px;
+  background-color: #fff;
   border-radius: 50%;
   position: absolute;
-  color: black;
   top: 1px;
-  right: 1px; /* Align the button to the right */
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  left: 1px;
+  transition: transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
   .active & {
-    transform: translateX(
-      calc(100% - 140px)
-    ); /* Translate the button to the left */
-    background-color: white; /* White button when active */
+    transform: translateX(calc(100% - 30px));
   }
 `;
 
-const labelStyles = css`
-  color: black;
-  font-size: 16px;
-  margin-right: auto;
-  margin-left: 10px; /* Add some space between label and button */
+const switchLabelStyles = css`
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: #fff;
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
 `;
 
+// Avatar image styles
 const avatarStyles = css`
   height: 30px;
   width: 30px;
@@ -107,37 +107,19 @@ export default function BooksAdmin() {
     return <Navigate to="/" replace />;
   }
 
-  const handleOnclick = async (id, currentIsApproved) => {
-    try {
-      // Toggle the isApproved status
-      const updatedIsApproved = !currentIsApproved;
-      // Determine the new isAvailable status based on the updated isApproved status
-
-      await axios.put(`http://localhost:3001/api/book/chaked/${id}`, {
-        isAproved: updatedIsApproved,
-      });
-
-      // Update the local state to reflect the changes
-      setBooks((prevBooks) =>
-        prevBooks.map((book) =>
-          book.id === id
-            ? {
-                ...book,
-                isApproved: updatedIsApproved,
-              }
-            : book
-        )
-      );
-    } catch (error) {
-      console.log(error);
-    }
+  const handleToggle = (id) => {
+    setBooks((prevBooks) =>
+      prevBooks.map((book) =>
+        book.id === id ? { ...book, isAvailable: !book.isAvailable } : book
+      )
+    );
   };
 
   return (
     <div css={homeContainerStyles}>
       <SideBar />
       <div css={homeComponentsStyles}>
-        <NavBar />
+        <NavBar type="admin/Books" />
         <div>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -172,14 +154,11 @@ export default function BooksAdmin() {
                     <TableCell align="right">{row.category}</TableCell>
                     <TableCell align="right">{row.title}</TableCell>
                     <TableCell align="center">
-                      <div
-                        css={customSwitchStyles}
-                        className={row.isApproved ? "active" : ""}
-                        onClick={() => handleOnclick(row.id, row.isApproved)}
-                      >
-                        <span css={labelStyles}>Active</span>
-                        <div css={customSwitchButtonStyles} />
-                      </div>
+                      <Switch
+                        checked={row.isAvailable && row.isAproved}
+                        onChange={() => handleToggle(row.id)}
+                        inputProps={{ "aria-label": "controlled" }}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
